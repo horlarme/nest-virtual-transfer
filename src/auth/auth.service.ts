@@ -6,6 +6,8 @@ import {
 import { compare } from 'bcrypt';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
+import { RegistrationDto } from './dto/login/registration.dto';
+import { LoginResponseDto } from './dto/login/response.dto';
 
 @Injectable()
 export class AuthService {
@@ -22,18 +24,30 @@ export class AuthService {
     if (!validPassword) throw new HttpException('Invalid credentials', 401);
 
     return {
-      access_token: this.jwtService.sign({
+      ...user,
+      accessToken: this.jwtService.sign({
         user: user!.id,
-        sub: user?.id,
+        sub: user!.id,
       }),
     };
   }
 
-  validateUser(userId: number) {
-    return this.userService.findOneById(userId).then((user) => {
-      if (!user) throw new UnauthorizedException();
+  async validateUser(userId: number) {
+    const user = await this.userService.findOneById(userId);
+    if (!user) throw new UnauthorizedException();
+    return user;
+  }
 
-      return user;
-    });
+  async register(data: RegistrationDto): Promise<LoginResponseDto> {
+    if (await this.userService.checkEmailExistence(data.email)) {
+      throw new HttpException('Email already exists', 400);
+    }
+
+    const user = await this.userService.createUserAccount(data);
+
+    return {
+      ...user,
+      accessToken: this.jwtService.sign({ user: user!.id, sub: user!.id }),
+    };
   }
 }
