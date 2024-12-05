@@ -5,11 +5,15 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   Column,
+  JoinTable,
+  JoinColumn,
+  BaseEntity,
 } from 'typeorm';
 import { VirtualAccount } from '../../virtual-account/virtual-account.entity';
+import { User } from '../../user/entities/user.entity';
 
 @Entity()
-export class Transaction {
+export class Transaction extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -28,18 +32,5 @@ export class Transaction {
     { onDelete: 'CASCADE' },
   )
   virtualAccount: VirtualAccount;
-
-  // @ManyToOne(() => User, (user) => user.transactions)
-  // @JoinTable({
-  //   name: 'virtual_account',
-  //   joinColumn: {
-  //     name: 'virtual_account_id',
-  //     referencedColumnName: 'id',
-  //   },
-  //   inverseJoinColumn: {
-  //     name: 'user_id',
-  //     referencedColumnName: 'id',
-  //   },
-  // })
-  // user: User;
+  virtualAccountId: number;
 }

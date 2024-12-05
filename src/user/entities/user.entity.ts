@@ -4,12 +4,13 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   CreateDateColumn,
-  OneToMany,
+  OneToOne,
+  BaseEntity,
 } from 'typeorm';
 import { VirtualAccount } from '../../virtual-account/virtual-account.entity';
 
 @Entity()
-export class User {
+export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -31,9 +32,10 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @OneToMany(() => VirtualAccount, (a) => a.user)
-  virtualAccounts: VirtualAccount[];
+  @OneToOne(() => VirtualAccount, (a) => a.user)
+  virtualAccount: VirtualAccount;
 
-  // @ManyToMany(() => Transaction, (a) => a.user)
-  // transactions: Transaction[];
+  get fullName(): string {
+    return `${this.firstName} ${this.lastName}`;
+  }
 }

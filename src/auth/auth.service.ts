@@ -8,12 +8,16 @@ import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { RegistrationDto } from './dto/login/registration.dto';
 import { LoginResponseDto } from './dto/login/response.dto';
+import { VirtualAccountService } from '../virtual-account/virtual-account.service';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private virtualAccountService: VirtualAccountService,
+    private dataSource: DataSource,
   ) {}
 
   async login(email: string, password: string) {
@@ -43,11 +47,17 @@ export class AuthService {
       throw new HttpException('Email already exists', 400);
     }
 
-    const user = await this.userService.createUserAccount(data);
+    return this.dataSource.manager.transaction(async (manager) => {
+      const user = await this.userService.createUserAccount(data);
+      user.virtualAccount =
+        await this.virtualAccountService.createVirtualAccount(user);
 
-    return {
-      ...user,
-      accessToken: this.jwtService.sign({ user: user!.id, sub: user!.id }),
-    };
+      await manager.save([user, user.virtualAccount]);
+
+      return {
+        ...user,
+        accessToken: this.jwtService.sign({ user: user!.id, sub: user!.id }),
+      } as LoginResponseDto;
+    });
   }
 }

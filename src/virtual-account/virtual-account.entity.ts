@@ -2,16 +2,18 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  JoinColumn,
+  BaseEntity,
 } from 'typeorm';
 import { User } from '../user/entities/user.entity';
 import { Transaction } from '../transaction/entities/transaction.entity';
 
 @Entity()
-export class VirtualAccount {
+export class VirtualAccount extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -28,15 +30,21 @@ export class VirtualAccount {
   bankName: string;
 
   @Column()
-  status: string;
+  status: 'active' | 'inactive';
 
+  /**
+   * Balance of the virtual account in Kobo (the lowest denomination of Naira)
+   */
   @Column({ default: 0, type: 'bigint' })
   balance: number;
 
-  @ManyToOne(() => User, (user) => user.virtualAccounts, {
-    onDelete: 'CASCADE',
+  @OneToOne(() => User, (user) => user.virtualAccount, {
+    eager: false,
   })
+  @JoinColumn()
   user: User;
+
+  userId: number;
 
   @OneToMany(() => Transaction, (transaction) => transaction.virtualAccount, {
     onDelete: 'CASCADE',

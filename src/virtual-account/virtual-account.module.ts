@@ -8,5 +8,6 @@ import { VirtualAccount } from './virtual-account.entity';
   imports: [TypeOrmModule.forFeature([VirtualAccount])],
   controllers: [VirtualAccountController],
   providers: [VirtualAccountService],
+  exports: [VirtualAccountService],
 })
 export class VirtualAccountModule {}
