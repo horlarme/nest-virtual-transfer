@@ -5,8 +5,6 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   Column,
-  JoinTable,
-  JoinColumn,
   BaseEntity,
 } from 'typeorm';
 import { VirtualAccount } from '../../virtual-account/virtual-account.entity';
