@@ -26,6 +26,9 @@ export class Transaction extends BaseEntity {
   @Column({ type: 'varchar', length: 255, nullable: false })
   description: string;
 
+  @Column({ length: 10, nullable: false })
+  type: 'debit' | 'credit';
+
   @Column('varchar', { length: 30 })
   ref: string;
 

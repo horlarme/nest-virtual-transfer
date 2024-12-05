@@ -28,11 +28,23 @@ export class VirtualAccountService {
     return VirtualAccount.create({
       accountNumber,
       user,
-      balance: 0,
+      balance: 100000000, // TODO: alway start with 0 balance?
       accountName: user.fullName,
       bankCode: '000', // TODO: Get bank code from user's bank
       bankName: 'Unknown Bank',
       status: 'active',
     });
+  }
+
+  async getVirtualAccountByAccountNumber(
+    accountNumber: string,
+  ): Promise<VirtualAccount | null> {
+    return VirtualAccount.findOneBy({ accountNumber });
+  }
+
+  async getVirtualAccountByUserId(
+    userId: number,
+  ): Promise<VirtualAccount | null> {
+    return VirtualAccount.findOneBy({ userId });
   }
 }
