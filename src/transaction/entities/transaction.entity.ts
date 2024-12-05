@@ -10,7 +10,6 @@ import {
   BaseEntity,
 } from 'typeorm';
 import { VirtualAccount } from '../../virtual-account/virtual-account.entity';
-import { User } from '../../user/entities/user.entity';
 
 @Entity()
 export class Transaction extends BaseEntity {
@@ -32,5 +31,7 @@ export class Transaction extends BaseEntity {
     { onDelete: 'CASCADE' },
   )
   virtualAccount: VirtualAccount;
+
+  @Column({ nullable: false })
   virtualAccountId: number;
 }

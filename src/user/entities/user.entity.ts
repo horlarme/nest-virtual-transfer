@@ -8,6 +8,7 @@ import {
   BaseEntity,
 } from 'typeorm';
 import { VirtualAccount } from '../../virtual-account/virtual-account.entity';
+import { classToPlain, Exclude, plainToClass } from 'class-transformer';
 
 @Entity()
 export class User extends BaseEntity {
@@ -23,6 +24,7 @@ export class User extends BaseEntity {
   @Column({ unique: true, nullable: false })
   email: string;
 
+  @Exclude({ toPlainOnly: true })
   @Column()
   password: string;
 

@@ -40,10 +40,12 @@ export class VirtualAccount extends BaseEntity {
 
   @OneToOne(() => User, (user) => user.virtualAccount, {
     eager: false,
+    nullable: false,
   })
   @JoinColumn()
   user: User;
 
+  @Column({ nullable: false })
   userId: number;
 
   @OneToMany(() => Transaction, (transaction) => transaction.virtualAccount, {
