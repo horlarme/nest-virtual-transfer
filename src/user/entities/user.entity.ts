@@ -34,7 +34,7 @@ export class User extends BaseEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @OneToOne(() => VirtualAccount, (a) => a.user)
+  @OneToOne(() => VirtualAccount, (a) => a.user, { eager: false })
   virtualAccount: VirtualAccount;
 
   get fullName(): string {

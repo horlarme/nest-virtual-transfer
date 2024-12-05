@@ -23,10 +23,16 @@ export class Transaction extends BaseEntity {
   @Column({ type: 'bigint', default: 0, nullable: false })
   amount: number;
 
+  @Column({ type: 'varchar', length: 255, nullable: false })
+  description: string;
+
+  @Column('varchar', { length: 30 })
+  ref: string;
+
   @ManyToOne(
     () => VirtualAccount,
     (virtualAccount) => virtualAccount.transactions,
-    { onDelete: 'CASCADE' },
+    { onDelete: 'CASCADE', eager: false },
   )
   virtualAccount: VirtualAccount;
 

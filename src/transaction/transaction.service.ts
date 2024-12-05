@@ -5,7 +5,7 @@ import { PaginationLimit } from '../auth/constants/pagination';
 
 @Injectable()
 export class TransactionService {
-  getUserTransactions(user: User, page = 1) {
+  getUserTransactions(user: User, page = 1, search: string = '') {
     return Transaction.createQueryBuilder('transaction')
       .innerJoin(
         'virtual_account',
@@ -13,8 +13,15 @@ export class TransactionService {
         'virtual_account.id = transaction.virtualAccountId',
       )
       .where('virtual_account.userId = :id', { id: user.id })
-      .offset((page - 1) * PaginationLimit)
-      .limit(PaginationLimit)
+      .andWhere(
+        '(transaction.ref like :query or transaction.description like :query)',
+        {
+          query: `%${search}`,
+        },
+      )
+      .orderBy('transaction.createdAt', 'DESC')
+      .take(PaginationLimit)
+      .skip((page - 1) * PaginationLimit)
       .getMany();
   }
 }

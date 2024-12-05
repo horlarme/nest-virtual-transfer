@@ -10,14 +10,28 @@ export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 
   @ApiBearerAuth()
-  @ApiOkResponse({ type: Transaction, isArray: true })
+  @ApiOkResponse({
+    type: Transaction,
+    isArray: true,
+  })
   @UseGuards(JwtAuthGuard)
   @ApiQuery({ name: 'page', required: false, default: 1, type: Number })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    type: String,
+    description: 'Search by transaction reference or description',
+  })
   @Get()
   async getTransactions(
     @Req() request: { user: User },
+    @Query('search') search?: string,
     @Query('page') page?: number,
   ): Promise<Transaction[]> {
-    return this.transactionService.getUserTransactions(request.user, page || 1);
+    return this.transactionService.getUserTransactions(
+      request.user,
+      page || 1,
+      search,
+    );
   }
 }
