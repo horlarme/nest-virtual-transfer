@@ -13,7 +13,7 @@ import { VirtualAccountModule } from './virtual-account/virtual-account.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        logging: true,
+        logging: process.env.NODE_ENV === 'development',
         type: configService.get('DATABASE_TYPE') as 'postgres',
         host: configService.get('DATABASE_HOST', ''),
         port: +configService.get('DATABASE_PORT', 3306),
