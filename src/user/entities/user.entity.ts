@@ -4,7 +4,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   CreateDateColumn,
+  OneToMany,
 } from 'typeorm';
+import { VirtualAccount } from '../../virtual-account/virtual-account.entity';
 
 @Entity()
 export class User {
@@ -24,8 +26,14 @@ export class User {
   password: string;
 
   @CreateDateColumn({ type: 'timestamp' })
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  updated_at: Date;
+  updatedAt: Date;
+
+  @OneToMany(() => VirtualAccount, (a) => a.user)
+  virtualAccounts: VirtualAccount[];
+
+  // @ManyToMany(() => Transaction, (a) => a.user)
+  // transactions: Transaction[];
 }

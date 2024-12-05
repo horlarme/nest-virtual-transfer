@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TransactionModule } from './transaction/transaction.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { VirtualAccountModule } from './virtual-account/virtual-account.module';
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { AuthModule } from './auth/auth.module';
         password: configService.get('DATABASE_PASS', 'root'),
         database: configService.get('DATABASE_DATABASE', 'app') as string,
         models: [],
-        // entities: [User],
+        // entities: [User, VirtualAccount, Transaction],
         autoLoadEntities: true,
         synchronize: true,
       }),
@@ -28,6 +29,7 @@ import { AuthModule } from './auth/auth.module';
     UserModule,
     TransactionModule,
     AuthModule,
+    VirtualAccountModule,
   ],
   controllers: [],
   providers: [AppService],
