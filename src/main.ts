@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 declare const module: any;
 
@@ -11,13 +12,19 @@ async function bootstrap() {
     .setTitle('Leadway')
     .setVersion('1.0')
     .addBearerAuth({
-      type: 'apiKey',
+      type: 'http',
       name: 'Authorization',
       in: 'headers',
     })
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs/api', app, documentFactory);
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+    }),
+  );
 
   await app.listen(process.env.PORT ?? 3000);
 

@@ -1,18 +1,16 @@
-import { Controller, Get } from '@nestjs/common';
-import { UserService } from './user.service';
-import { DataSource } from 'typeorm';
+import { Controller, Get, Request, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { User } from './entities/user.entity';
 
 @Controller('user')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    private dataSource: DataSource,
-  ) {}
+  constructor() {}
 
   @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  user(@Request() req: any): User {
+    return req.user;
   }
 }
